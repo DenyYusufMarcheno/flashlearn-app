@@ -1,16 +1,22 @@
 // src/components/Flashcard.jsx
 import React, { useContext } from 'react';
-import { FlashcardContext } from '../App'; // Import Context dari App.jsx
+import { FlashcardContext } from '../App';
 
-function Flashcard() { // Hapus props front, back, isFlipped, onCardClick
+function Flashcard() {
   const { cards, currentCardIndex, isCardFlipped, handleFlipCard } = useContext(FlashcardContext);
 
-  // Jika belum ada kartu atau indeks tidak valid, tampilkan pesan
-  if (!cards || cards.length === 0) {
-    return <div style={{textAlign: 'center', padding: '50px', fontSize: '1.2em'}}>Tidak ada kartu untuk ditampilkan.</div>;
-  }
+  // **PERBAIKAN:** Cek apakah currentCard ada sebelum mencoba mengakses propertinya.
+  // Ini adalah baris paling penting untuk mencegah error.
+  const currentCard = cards && cards.length > currentCardIndex ? cards[currentCardIndex] : null;
 
-  const currentCard = cards[currentCardIndex]; // Ambil kartu saat ini dari context
+  // Jika belum ada kartu (baik karena cards kosong atau currentCardIndex invalid), tampilkan pesan.
+  if (!currentCard) { // Menggunakan !currentCard karena bisa saja null
+    return (
+      <div style={{ textAlign: 'center', padding: '50px', fontSize: '1.2em', color: '#888' }}>
+        Tidak ada kartu untuk ditampilkan dalam deck ini.
+      </div>
+    );
+  }
 
   const cardContainerStyle = {
     perspective: '1000px',

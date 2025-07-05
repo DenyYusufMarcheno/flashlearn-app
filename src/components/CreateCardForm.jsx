@@ -1,19 +1,19 @@
-// src/components/CreateDeckForm.jsx
+// src/components/CreateCardForm.jsx
 import React, { useState } from 'react';
 
-function CreateDeckForm({ onCreateDeck, onCancel }) {
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
+function CreateCardForm({ deckId, onCreateCard, onCancel }) {
+  const [front, setFront] = useState('');
+  const [back, setBack] = useState('');
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Mencegah reload halaman
-    if (!title.trim() || !category.trim()) {
-      alert('Judul dan Kategori tidak boleh kosong!');
+    e.preventDefault();
+    if (!front.trim() || !back.trim()) {
+      alert('Sisi depan dan belakang kartu tidak boleh kosong!');
       return;
     }
-    onCreateDeck({ title, category });
-    setTitle(''); // Reset form
-    setCategory(''); // Reset form
+    onCreateCard(deckId, { front, back }); // Meneruskan deckId, front, back
+    setFront(''); // Reset form
+    setBack(''); // Reset form
   };
 
   const formStyle = {
@@ -66,27 +66,27 @@ function CreateDeckForm({ onCreateDeck, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>
-      <h3 style={{ margin: '0 0 15px', textAlign: 'center', color: '#333' }}>Buat Deck Flashcard Baru</h3>
+      <h3 style={{ margin: '0 0 15px', textAlign: 'center', color: '#333' }}>Tambah Kartu Baru</h3>
       <div>
-        <label htmlFor="deckTitle" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Judul Deck:</label>
+        <label htmlFor="cardFront" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Sisi Depan:</label>
         <input
           type="text"
-          id="deckTitle"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Misal: Kosakata Bahasa Jerman"
+          id="cardFront"
+          value={front}
+          onChange={(e) => setFront(e.target.value)}
+          placeholder="Misal: 'Hello'"
           required
           style={inputStyle}
         />
       </div>
       <div>
-        <label htmlFor="deckCategory" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Kategori:</label>
+        <label htmlFor="cardBack" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Sisi Belakang:</label>
         <input
           type="text"
-          id="deckCategory"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          placeholder="Misal: Bahasa"
+          id="cardBack"
+          value={back}
+          onChange={(e) => setBack(e.target.value)}
+          placeholder="Misal: 'Halo'"
           required
           style={inputStyle}
         />
@@ -96,11 +96,11 @@ function CreateDeckForm({ onCreateDeck, onCancel }) {
           Batal
         </button>
         <button type="submit" style={saveButtonStyle}>
-          Simpan Deck
+          Simpan Kartu
         </button>
       </div>
     </form>
   );
 }
 
-export default CreateDeckForm;
+export default CreateCardForm;
