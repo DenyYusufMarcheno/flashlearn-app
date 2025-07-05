@@ -1,11 +1,14 @@
 // src/components/CardControls.jsx
-import React from 'react';
+import React, { useContext } from 'react';
+import { FlashcardContext } from '../App'; // Import Context dari App.jsx
 
-function CardControls({ onPrev, onNext, current, total }) {
+function CardControls() { // Hapus props onPrev, onNext, current, total
+  const { currentCardIndex, totalCards, handlePrevCard, handleNextCard } = useContext(FlashcardContext);
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px', gap: '15px' }}>
-      <button 
-        onClick={onPrev} 
+      <button
+        onClick={handlePrevCard}
         style={{
           padding: '10px 20px',
           backgroundColor: '#007bff',
@@ -20,10 +23,10 @@ function CardControls({ onPrev, onNext, current, total }) {
         &larr; Sebelumnya
       </button>
       <span style={{ fontSize: '1.1em', fontWeight: 'bold', color: '#555' }}>
-        {current} / {total}
+        {currentCardIndex + 1} / {totalCards}
       </span>
-      <button 
-        onClick={onNext} 
+      <button
+        onClick={handleNextCard}
         style={{
           padding: '10px 20px',
           backgroundColor: '#007bff',

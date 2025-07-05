@@ -1,14 +1,24 @@
 // src/components/Flashcard.jsx
-import React from 'react';
+import React, { useContext } from 'react';
+import { FlashcardContext } from '../App'; // Import Context dari App.jsx
 
-function Flashcard({ front, back, isFlipped, onCardClick }) {
+function Flashcard() { // Hapus props front, back, isFlipped, onCardClick
+  const { cards, currentCardIndex, isCardFlipped, handleFlipCard } = useContext(FlashcardContext);
+
+  // Jika belum ada kartu atau indeks tidak valid, tampilkan pesan
+  if (!cards || cards.length === 0) {
+    return <div style={{textAlign: 'center', padding: '50px', fontSize: '1.2em'}}>Tidak ada kartu untuk ditampilkan.</div>;
+  }
+
+  const currentCard = cards[currentCardIndex]; // Ambil kartu saat ini dari context
+
   const cardContainerStyle = {
     perspective: '1000px',
     width: '320px',
     height: '220px',
     margin: '30px auto',
     cursor: 'pointer',
-    position: 'relative', // Penting untuk posisi absolut inner
+    position: 'relative',
   };
 
   const cardInnerStyle = {
@@ -18,7 +28,7 @@ function Flashcard({ front, back, isFlipped, onCardClick }) {
     textAlign: 'center',
     transition: 'transform 0.6s',
     transformStyle: 'preserve-3d',
-    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)', // Efek flip
+    transform: isCardFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
   };
 
   const cardFaceStyle = {
@@ -46,22 +56,20 @@ function Flashcard({ front, back, isFlipped, onCardClick }) {
 
   const cardBackStyle = {
     ...cardFaceStyle,
-    backgroundColor: '#e0ffe0', // Warna hijau muda
+    backgroundColor: '#e0ffe0',
     color: '#333',
     border: '2px solid #4CAF50',
     transform: 'rotateY(180deg)',
   };
 
   return (
-    <div style={cardContainerStyle} onClick={onCardClick}> {/* Tambahkan onClick */}
+    <div style={cardContainerStyle} onClick={handleFlipCard}>
       <div style={cardInnerStyle}>
-        {/* Sisi Depan */}
         <div style={cardFrontStyle}>
-          {front}
+          {currentCard.front}
         </div>
-        {/* Sisi Belakang */}
         <div style={cardBackStyle}>
-          {back}
+          {currentCard.back}
         </div>
       </div>
     </div>
