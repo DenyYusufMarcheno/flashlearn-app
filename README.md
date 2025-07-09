@@ -20,11 +20,6 @@ FlashLearn adalah sebuah platform web pembelajaran interaktif yang dirancang unt
 * **Manajemen Kartu dalam Deck:**
     * Menambah kartu baru ke dalam *deck* yang sedang dipilih (memasukkan sisi depan dan belakang).
     * Menghapus kartu yang sedang ditampilkan dari *deck* yang aktif.
-* **Integrasi Data API (Backend Mock):**
-    * Mengambil data *deck* dan *flashcard* dari API eksternal (menggunakan JSON Server).
-    * Operasi CRUD (Create, Read, Update, Delete) pada *deck* dan kartu dilakukan dengan berkomunikasi dengan API menggunakan Axios.
-    * Menampilkan status *loading* saat mengambil data dari API.
-    * Menampilkan pesan *error* jika terjadi masalah saat komunikasi dengan API.
 * **Navigasi Multi-Halaman:**
     * Aplikasi memiliki beberapa halaman (misal: Home, About, halaman detail *deck*) menggunakan React Router.
     * Navigasi antar halaman dilakukan menggunakan `<Link>` (untuk tautan) dan `useNavigate` (untuk navigasi programatik).
