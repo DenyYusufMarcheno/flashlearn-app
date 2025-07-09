@@ -1,67 +1,44 @@
 // src/components/Flashcard.jsx
-import React from 'react';
+import React, { useContext } from 'react';
+import { FlashcardContext } from '../App';
 
-function Flashcard({ front, back, isFlipped, onCardClick }) {
+function Flashcard() {
+  const { cards, currentCardIndex, isCardFlipped, handleFlipCard } = useContext(FlashcardContext);
+
+  const currentCard = cards && cards.length > currentCardIndex ? cards[currentCardIndex] : null;
+
+  if (!currentCard) {
+    return (
+      <div className="text-center p-10 text-lg text-gray-700">
+        Tidak ada kartu untuk ditampilkan dalam deck ini.
+      </div>
+    );
+  }
+
   const cardContainerStyle = {
     perspective: '1000px',
-    width: '320px',
-    height: '220px',
-    margin: '30px auto',
-    cursor: 'pointer',
-    position: 'relative', // Penting untuk posisi absolut inner
   };
 
   const cardInnerStyle = {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    textAlign: 'center',
     transition: 'transform 0.6s',
     transformStyle: 'preserve-3d',
-    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)', // Efek flip
+    transform: isCardFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
   };
 
-  const cardFaceStyle = {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    backfaceVisibility: 'hidden',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-    fontSize: '1.8em',
-    fontWeight: 'bold',
-    padding: '20px',
-    boxSizing: 'border-box',
-  };
-
-  const cardFrontStyle = {
-    ...cardFaceStyle,
-    backgroundColor: '#ffffff',
-    color: '#333',
-    border: '2px solid #4CAF50',
-  };
-
-  const cardBackStyle = {
-    ...cardFaceStyle,
-    backgroundColor: '#e0ffe0', // Warna hijau muda
-    color: '#333',
-    border: '2px solid #4CAF50',
-    transform: 'rotateY(180deg)',
-  };
+  const cardFaceBaseClasses = "absolute w-full h-full backface-hidden flex items-center justify-center rounded-xl shadow-lg text-3xl font-bold p-5 box-border";
 
   return (
-    <div style={cardContainerStyle} onClick={onCardClick}> {/* Tambahkan onClick */}
-      <div style={cardInnerStyle}>
-        {/* Sisi Depan */}
-        <div style={cardFrontStyle}>
-          {front}
+    <div 
+      className="w-80 h-56 mx-auto my-8 cursor-pointer relative" 
+      style={cardContainerStyle} 
+      onClick={handleFlipCard}
+    >
+      <div className="relative w-full h-full text-center" style={cardInnerStyle}>
+        <div className={`${cardFaceBaseClasses} bg-white text-gray-800 border-2 border-green-500`}>
+          {currentCard.front}
         </div>
-        {/* Sisi Belakang */}
-        <div style={cardBackStyle}>
-          {back}
+        <div className={`${cardFaceBaseClasses} bg-green-100 text-gray-800 border-2 border-green-500 transform rotate-y-180`} style={{ backfaceVisibility: 'hidden' }}>
+          {currentCard.back}
         </div>
       </div>
     </div>

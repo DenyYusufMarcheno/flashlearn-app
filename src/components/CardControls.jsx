@@ -1,39 +1,24 @@
 // src/components/CardControls.jsx
-import React from 'react';
+import React, { useContext } from 'react';
+import { FlashcardContext } from '../App';
 
-function CardControls({ onPrev, onNext, current, total }) {
+function CardControls() {
+  const { currentCardIndex, totalCards, handlePrevCard, handleNextCard } = useContext(FlashcardContext);
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '20px', gap: '15px' }}>
-      <button 
-        onClick={onPrev} 
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontSize: '1em',
-          transition: 'background-color 0.3s ease'
-        }}
+    <div className="flex justify-center items-center mt-5 space-x-4">
+      <button
+        onClick={handlePrevCard}
+        className="px-5 py-2 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300"
       >
         &larr; Sebelumnya
       </button>
-      <span style={{ fontSize: '1.1em', fontWeight: 'bold', color: '#555' }}>
-        {current} / {total}
+      <span className="text-lg font-bold text-gray-700">
+        {currentCardIndex + 1} / {totalCards}
       </span>
-      <button 
-        onClick={onNext} 
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontSize: '1em',
-          transition: 'background-color 0.3s ease'
-        }}
+      <button
+        onClick={handleNextCard}
+        className="px-5 py-2 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300"
       >
         Selanjutnya &rarr;
       </button>

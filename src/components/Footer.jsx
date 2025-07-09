@@ -2,18 +2,11 @@
 import React from 'react';
 
 function Footer() {
-  const currentYear = new Date().getFullYear(); // Dapatkan tahun saat ini
+  const currentYear = new Date().getFullYear();
   return (
-    <footer style={{ 
-        backgroundColor: '#333', 
-        color: 'white', 
-        textAlign: 'center', 
-        padding: '20px 0', 
-        marginTop: 'auto', // Agar footer selalu di bawah
-        fontSize: '0.9em' 
-    }}>
+    <footer className="bg-gray-800 text-white text-center p-5 mt-auto text-sm">
       <p>&copy; {currentYear} FlashLearn. All rights reserved.</p>
-      <p>Dibuat untuk Tugas Final Project PIBITI 2025.</p>
+      <p className="mt-1">Dibuat untuk Tugas Final Project PIBITI 2025.</p>
     </footer>
   );
 }

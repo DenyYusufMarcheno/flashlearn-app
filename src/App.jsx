@@ -1,112 +1,210 @@
 // src/App.jsx
-import React, { useState } from 'react'; // Import useState
+import React, { useState, useEffect, createContext, useMemo, useCallback } from 'react';
+import { Routes, Route } from 'react-router-dom';
+
 import Header from './components/Header';
-import DeckCard from './components/DeckCard';
-import Flashcard from './components/Flashcard';
-import CardControls from './components/CardControls'; // Komponen baru
 import Footer from './components/Footer';
 
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import DeckDetailPage from './pages/DeckDetailPage';
+
+export const FlashcardContext = createContext();
+
 function App() {
-  // Data dummy untuk deck flashcard
-  const initialDecks = [
-    { id: 1, title: "Kosakata Bahasa Inggris", cardCount: 25, category: "Bahasa" },
-    { id: 2, title: "Rumus Matematika Dasar", cardCount: 15, category: "Sains" },
-    { id: 3, title: "Sejarah Kemerdekaan RI", cardCount: 30, category: "Sejarah" },
-    { id: 4, title: "Istilah Teknologi", cardCount: 20, category: "Komputer" },
-  ];
+  const initialDataDecks = useMemo(() => [
+    { id: 1, title: "Kosakata Bahasa Inggris", cardCount: 5, category: "Bahasa", deckCards: [
+        { id: 1, front: "Hello", back: "Halo", category: "Bahasa" },
+        { id: 2, front: "World", back: "Dunia", category: "Bahasa" },
+        { id: 3, front: "Cat", back: "Kucing", category: "Bahasa" },
+        { id: 4, front: "Dog", back: "Anjing", category: "Bahasa" },
+        { id: 5, front: "Book", back: "Buku", category: "Bahasa" },
+      ]
+    },
+    { id: 2, title: "Rumus Matematika Dasar", cardCount: 3, category: "Sains", deckCards: [
+        { id: 6, front: "2 + 2", back: "4", category: "Sains" },
+        { id: 7, front: "Phytagorean Theorem", back: "a^2 + b^2 = c^2", category: "Sains" },
+        { id: 8, front: "Newton's First Law", back: "Inertia", category: "Sains" },
+      ]
+    },
+    { id: 3, title: "Sejarah Kemerdekaan RI", cardCount: 2, category: "Sejarah", deckCards: [
+        { id: 9, front: "Proklamasi Kemerdekaan", back: "17 Agustus 1945", category: "Sejarah" },
+        { id: 10, front: "Pancasila Sila Ke-3", back: "Persatuan Indonesia", category: "Sejarah" },
+      ]
+    },
+    { id: 4, title: "Istilah Teknologi", cardCount: 2, category: "Komputer", deckCards: [
+        { id: 11, front: "React", back: "Library JavaScript", category: "Komputer" },
+        { id: 12, front: "Node.js", back: "Runtime JavaScript", category: "Komputer" },
+      ]
+    },
+  ], []);
 
-  // Data dummy untuk kartu dalam satu deck (misalnya deck Kosakata Bahasa Inggris)
-  const englishVocabCards = [
-    { id: 1, front: "Hello", back: "Halo" },
-    { id: 2, front: "World", back: "Dunia" },
-    { id: 3, front: "Cat", back: "Kucing" },
-    { id: 4, front: "Dog", back: "Anjing" },
-    { id: 5, front: "Book", back: "Buku" },
-  ];
-
-  // State untuk mengelola kartu yang sedang ditampilkan
+  const [decks, setDecks] = useState(initialDataDecks);
+  const [selectedDeckId, setSelectedDeckId] = useState(null);
+  const [cards, setCards] = useState([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [isCardFlipped, setIsCardFlipped] = useState(false); // State untuk flip kartu
+  const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeDeckInfo, setActiveDeckInfo] = useState(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showCreateCardForm, setShowCreateCardForm] = useState(false);
 
-  const handleNextCard = () => {
-    setIsCardFlipped(false); // Balik kartu ke depan saat ganti
-    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % englishVocabCards.length);
-  };
 
-  const handlePrevCard = () => {
-    setIsCardFlipped(false); // Balik kartu ke depan saat ganti
-    setCurrentCardIndex((prevIndex) => (prevIndex - 1 + englishVocabCards.length) % englishVocabCards.length);
-  };
+  const loadDeckCards = useCallback((deckId) => {
+    if (deckId === null) {
+      setCards([]);
+      setCurrentCardIndex(0);
+      setIsCardFlipped(false);
+      setActiveDeckInfo(null);
+      document.title = "FlashLearn - Pilih Deck Anda";
+      return;
+    }
 
-  const handleFlipCard = () => {
+    setIsLoading(true);
+    const deckToLoad = decks.find(deck => deck.id === deckId);
+
+    if (deckToLoad) {
+      setTimeout(() => {
+        setCards(deckToLoad.deckCards || []);
+        setIsLoading(false);
+        setActiveDeckInfo(deckToLoad);
+        document.title = `FlashLearn - ${deckToLoad.title}`;
+        setCurrentCardIndex(0);
+        setIsCardFlipped(false);
+      }, 500);
+    } else {
+      setCards([]);
+      setIsLoading(false);
+      setActiveDeckInfo(null);
+      setCurrentCardIndex(0);
+      setIsCardFlipped(false);
+      document.title = "FlashLearn - Deck Tidak Ditemukan";
+    }
+  }, [decks]);
+
+  const handleNextCard = useCallback(() => {
+    if (cards.length === 0) return;
+    setIsCardFlipped(false);
+    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
+  }, [cards.length]);
+
+  const handlePrevCard = useCallback(() => {
+    if (cards.length === 0) return;
+    setIsCardFlipped(false);
+    setCurrentCardIndex((prevIndex) => (prevIndex - 1 + cards.length) % cards.length);
+  }, [cards.length]);
+
+  const handleFlipCard = useCallback(() => {
     setIsCardFlipped((prevFlipped) => !prevFlipped);
-  };
+  }, []);
+
+  const handleCreateDeck = useCallback((newDeckData) => {
+    const newId = Math.max(0, ...decks.map(d => d.id)) + 1;
+    const newDeck = {
+      id: newId,
+      title: newDeckData.title,
+      category: newDeckData.category,
+      cardCount: 0,
+      deckCards: [],
+    };
+    setDecks((prevDecks) => [...prevDecks, newDeck]);
+    setShowCreateForm(false);
+  }, [decks]);
+
+  const handleDeleteDeck = useCallback((deckId) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus deck ini? Semua kartu di dalamnya akan hilang.")) {
+      setDecks((prevDecks) => prevDecks.filter(deck => deck.id !== deckId));
+      if (selectedDeckId === deckId) {
+        setSelectedDeckId(null);
+      }
+    }
+  }, [selectedDeckId]);
+
+  const handleAddCardToDeck = useCallback((deckId, cardData) => {
+    setDecks((prevDecks) => {
+      return prevDecks.map((deck) => {
+        if (deck.id === deckId) {
+          const currentDeckCards = deck.deckCards || [];
+          const newCardId = currentDeckCards.length > 0 ? Math.max(...currentDeckCards.map(c => c.id)) + 1 : 1;
+          const newCard = { id: newCardId, ...cardData, category: deck.category };
+          return {
+            ...deck,
+            deckCards: [...currentDeckCards, newCard],
+            cardCount: (deck.cardCount || 0) + 1,
+          };
+        }
+        return deck;
+      });
+    });
+    setShowCreateCardForm(false);
+  }, []);
+
+  const handleDeleteCardFromDeck = useCallback((deckId, cardIdToDelete) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus kartu ini?")) {
+      setDecks((prevDecks) => {
+        return prevDecks.map((deck) => {
+          if (deck.id === deckId) {
+            const updatedDeckCards = (deck.deckCards || []).filter(
+              (card) => card.id !== cardIdToDelete
+            );
+            return {
+              ...deck,
+              deckCards: updatedDeckCards,
+              cardCount: Math.max(0, (deck.cardCount || 0) - 1),
+            };
+          }
+          return deck;
+        });
+      });
+    }
+  }, []);
+
+  const flashcardContextValue = useMemo(() => ({
+    decks,
+    setDecks,
+    selectedDeckId,
+    setSelectedDeckId,
+    cards,
+    setCards,
+    currentCardIndex,
+    setCurrentCardIndex,
+    isCardFlipped,
+    setIsCardFlipped,
+    isLoading,
+    activeDeckInfo,
+    setActiveDeckInfo,
+    showCreateForm,
+    setShowCreateForm,
+    showCreateCardForm,
+    setShowCreateCardForm,
+    loadDeckCards,
+    handleNextCard,
+    handlePrevCard,
+    handleFlipCard,
+    handleCreateDeck,
+    handleDeleteDeck,
+    handleAddCardToDeck,
+    handleDeleteCardFromDeck,
+    totalCards: cards.length,
+  }), [
+    decks, selectedDeckId, cards, currentCardIndex, isCardFlipped, isLoading, activeDeckInfo,
+    showCreateForm, setShowCreateForm, showCreateCardForm, setShowCreateCardForm,
+    loadDeckCards, handleNextCard, handlePrevCard, handleFlipCard, handleCreateDeck,
+    handleDeleteDeck, handleAddCardToDeck, handleDeleteCardFromDeck, cards.length
+  ]);
 
   return (
-    <div className="App" style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f4f7f6', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
       <Header />
-      <main style={{ flexGrow: 1, padding: '20px', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
-        <section style={{ marginBottom: '40px' }}>
-          <h2 style={{ textAlign: 'center', color: '#333', marginBottom: '25px' }}>Koleksi Deck Anda</h2>
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
-            {/* Iterasi data deck menggunakan .map() */}
-            {initialDecks.map(deck => (
-              <DeckCard 
-                key={deck.id} 
-                title={deck.title} 
-                cardCount={deck.cardCount} 
-                category={deck.category} 
-              />
-            ))}
-          </div>
-        </section>
-
-        <section style={{ marginBottom: '40px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
-          <h2 style={{ textAlign: 'center', color: '#333', marginBottom: '25px' }}>Latihan Flashcard</h2>
-          <p style={{ textAlign: 'center', color: '#666', marginBottom: '30px' }}>
-            Klik kartu untuk melihat sisi baliknya, gunakan tombol navigasi di bawah.
-          </p>
-          {englishVocabCards.length > 0 ? (
-            <>
-              <Flashcard 
-                front={englishVocabCards[currentCardIndex].front} 
-                back={englishVocabCards[currentCardIndex].back} 
-                isFlipped={isCardFlipped} // Kirim state isFlipped ke komponen Flashcard
-                onCardClick={handleFlipCard} // Kirim handler ke Flashcard
-              />
-              <CardControls 
-                onPrev={handlePrevCard} 
-                onNext={handleNextCard} 
-                current={currentCardIndex + 1}
-                total={englishVocabCards.length}
-              />
-            </>
-          ) : (
-            <p style={{textAlign: 'center'}}>Tidak ada kartu dalam deck ini.</p>
-          )}
-          
-        </section>
-
-        <section style={{ marginTop: '40px', textAlign: 'center', paddingTop: '20px', borderTop: '1px solid #eee' }}>
-            <h2 style={{ color: '#333', marginBottom: '20px' }}>Mulai Buat Deck Anda Sendiri!</h2>
-            <p style={{ color: '#666', marginBottom: '30px' }}>
-                Atur materi pembelajaran Anda dengan mudah dan efektif.
-            </p>
-            <button style={{ 
-                padding: '12px 25px', 
-                backgroundColor: '#28a745', 
-                color: 'white', 
-                border: 'none', 
-                borderRadius: '8px', 
-                cursor: 'pointer', 
-                fontSize: '1.1em',
-                fontWeight: 'bold',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                transition: 'background-color 0.3s ease'
-            }}>
-                + Buat Deck Baru
-            </button>
-        </section>
+      <main className="flex-grow p-5 max-w-7xl mx-auto w-full">
+        <FlashcardContext.Provider value={flashcardContextValue}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/deck/:deckId" element={<DeckDetailPage />} />
+            <Route path="*" element={<h2 className="text-center text-red-500 text-2xl mt-10">404 - Halaman Tidak Ditemukan</h2>} />
+          </Routes>
+        </FlashcardContext.Provider>
       </main>
       <Footer />
     </div>
