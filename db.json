@@ -1,0 +1,122 @@
+{
+  "decks": [
+    {
+      "id": "1",
+      "title": "Kosakata Bahasa Inggris",
+      "cardCount": 5,
+      "category": "Bahasa",
+      "deckCards": [
+        {
+          "id": 1,
+          "front": "Hello",
+          "back": "Halo"
+        },
+        {
+          "id": 2,
+          "front": "World",
+          "back": "Dunia"
+        },
+        {
+          "id": 3,
+          "front": "Cat",
+          "back": "Kucing"
+        },
+        {
+          "id": 4,
+          "front": "Dog",
+          "back": "Anjing"
+        },
+        {
+          "id": 5,
+          "front": "Book",
+          "back": "Buku"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Rumus Matematika Dasar",
+      "cardCount": 3,
+      "category": "Sains",
+      "deckCards": [
+        {
+          "id": 6,
+          "front": "2 + 2",
+          "back": "4"
+        },
+        {
+          "id": 7,
+          "front": "Phytagorean Theorem",
+          "back": "a^2 + b^2 = c^2"
+        },
+        {
+          "id": 8,
+          "front": "Newton's First Law",
+          "back": "Inertia"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Sejarah Kemerdekaan RI",
+      "cardCount": 2,
+      "category": "Sejarah",
+      "deckCards": [
+        {
+          "id": 9,
+          "front": "Proklamasi Kemerdekaan",
+          "back": "17 Agustus 1945"
+        },
+        {
+          "id": 10,
+          "front": "Pancasila Sila Ke-3",
+          "back": "Persatuan Indonesia"
+        }
+      ]
+    },
+    {
+      "id": "1406",
+      "title": "Abbreviation",
+      "category": "kosakata bahasa inggris",
+      "cardCount": 6,
+      "deckCards": [
+        {
+          "id": 1,
+          "front": "FYI",
+          "back": "For Your Information",
+          "category": "kosakata bahasa inggris"
+        },
+        {
+          "id": 2,
+          "front": "ASAP",
+          "back": "As Soon As Possible",
+          "category": "kosakata bahasa inggris"
+        },
+        {
+          "id": 3,
+          "front": "OMG",
+          "back": "Oh My God",
+          "category": "kosakata bahasa inggris"
+        },
+        {
+          "id": 4,
+          "front": "BRB",
+          "back": "Be Right Back",
+          "category": "kosakata bahasa inggris"
+        },
+        {
+          "id": 5,
+          "front": "DIY",
+          "back": "Do it yourself",
+          "category": "kosakata bahasa inggris"
+        },
+        {
+          "id": 6,
+          "front": "TL;DR",
+          "back": "Too long didn't read",
+          "category": "kosakata bahasa inggris"
+        }
+      ]
+    }
+  ]
+}

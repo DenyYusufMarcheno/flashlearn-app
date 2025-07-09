@@ -14,22 +14,23 @@ function DeckDetailPage() {
     currentCardIndex
   } = useContext(FlashcardContext);
   
-  const { deckId } = useParams();
+  const { deckId } = useParams(); // deckId sudah berupa string dari URL
   const navigate = useNavigate();
 
   useEffect(() => {
-    const id = parseInt(deckId);
-    if (isNaN(id)) {
+    if (!deckId) { // Cek jika deckId dari URL kosong
         navigate('/');
         return;
     }
-    loadDeckCards(id);
-  }, [deckId, decks, loadDeckCards, navigate]);
+    loadDeckCards(deckId); // Langsung gunakan string ID dari useParams
+  }, [deckId, decks, loadDeckCards, navigate]); // Tambahkan `decks` ke dependency untuk re-render saat decks berubah
 
+  // Jika tidak ada activeDeckInfo dan masih loading
   if (!activeDeckInfo && isLoading) {
     return <p className="text-center text-xl text-gray-700 mt-10">Memuat deck...</p>;
   }
 
+  // Jika activeDeckInfo null (setelah loading atau tidak ditemukan)
   if (!activeDeckInfo) {
     return (
       <div className="text-center text-xl text-red-500 mt-10">
@@ -59,6 +60,7 @@ function DeckDetailPage() {
 
                 {cards.length > 0 && (
                     <button
+                        // Menggunakan activeDeckInfo.id (string) dan cards[currentCardIndex]?.id (string/number)
                         onClick={() => handleDeleteCardFromDeck(activeDeckInfo.id, cards[currentCardIndex]?.id)}
                         className="px-5 py-2 bg-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-700 transition-colors duration-300"
                         style={{ display: showCreateCardForm ? 'none' : 'inline-block' }}
@@ -76,7 +78,7 @@ function DeckDetailPage() {
                 )}
               </div>
             </>
-          ) : (
+          ) : ( // Kondisi ketika deck dipilih tapi tidak ada kartu (cards.length === 0)
             <div className="text-center">
               <p className="text-lg text-gray-700 mb-5">Tidak ada kartu dalam deck ini.</p>
               <button
